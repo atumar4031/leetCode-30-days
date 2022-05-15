@@ -1,4 +1,5 @@
 import java.util.Objects;
+import java.util.Stack;
 
 public class ValidParentheses {
     public static void main(String[] args) {
@@ -7,26 +8,36 @@ public class ValidParentheses {
     }
 
     public static boolean isValid(String s) {
-//        Input: s = "()[]{}"
-//        Output: true
-//        Input: s = "(]"
-//        Output: false
+
         String[] sArray = s.split("");
-        int count = 0;
-        for (int i = 0, j = i + 1; i < sArray.length - 1; i++, j++) {
-            if (sArray[i].equals("(") && sArray[j].equals(")")){
-                count++;
+        Stack<String> stack = new Stack<>();
+        if(sArray.length % 2 != 0) return false;
+        if(sArray[sArray.length - 1].equals("(")
+                || sArray[sArray.length - 1].equals("[")
+                || sArray[sArray.length - 1].equals("{"))
+            return false;
+
+
+        for (int i = 0; i < sArray.length; i++) {
+
+            if (
+                    stack.size() == 0
+                    || sArray[i].equals("(")
+                    || sArray[i].equals("[")
+                    || sArray[i].equals("{")){
+                        stack.push(sArray[i]);
+                }
+            else if(sArray[i].equals(")") && !stack.peek().equals("(")
+                    || sArray[i].equals("]") && !stack.peek().equals("[")
+                    || sArray[i].equals("}") && !stack.peek().equals("{")
+            ){
+                return false;
             }
-            else if (sArray[i].equals("[") && sArray[j].equals("]")){
-                count++;
-            }
-            else if (sArray[i].equals("{") && sArray[j].equals("}")){
-                count++;
+            else{
+                stack.pop();
             }
         }
-        if (count == sArray.length/2){
-            return true;
-        }
+        if(stack.size() == 0) return true;
 
         return false;
     }
